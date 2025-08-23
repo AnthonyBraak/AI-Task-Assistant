@@ -1,0 +1,14 @@
+@import "./variables";
+
+.app {
+  display: flex;
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+  background-color: $bg-color;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: $main-bg;
+}
