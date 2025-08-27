@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Task } from "../../types/task";
 import "./TaskItem.scss";
+import { rephraseTaskGroq } from "../../utils/openai";
 
 type TaskItemProps = {
   task: Task;
@@ -18,6 +19,10 @@ export default function TaskItem({
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(task.title);
   const [editedDesc, setEditedDesc] = useState(task.description || "");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [rephrased, setRephrased] = useState<string | null>(null);
+  const [rephraseMode, setRephraseMode] = useState<"title" | "full">("title");
 
   const handleSave = () => {
     const updatedTask: Task = {
@@ -33,6 +38,30 @@ export default function TaskItem({
     setIsEditing(false);
     setEditedTitle(task.title);
     setEditedDesc(task.description || "");
+  };
+
+  const handleRephrase = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const textToRephrase =
+        rephraseMode === "full" && task.description
+          ? `${task.title}: ${task.description}`
+          : task.title;
+
+      const result = await rephraseTaskGroq(textToRephrase);
+      setRephrased(result);
+    } catch (error: unknown) {
+      console.error("Error during rephrasing:", error);
+
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Failed to rephrase task.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -76,6 +105,55 @@ export default function TaskItem({
           <div className="actions">
             <button onClick={() => setIsEditing(true)}>Edit</button>
             <button onClick={() => onDelete(task.id)}>Delete</button>
+
+            <select
+              value={rephraseMode}
+              onChange={(e) =>
+                setRephraseMode(e.target.value as "title" | "full")
+              }
+              disabled={loading}
+            >
+              <option value="title">Rephrase Title Only</option>
+              <option value="full">Rephrase Title & Description</option>
+            </select>
+
+            <button onClick={handleRephrase} disabled={loading}>
+              {loading ? "Rephrasing..." : "Rephrase"}
+            </button>
+
+            {rephrased && (
+              <div className="rephrased-text">
+                <strong>Rephrased:</strong>
+                <p>{rephrased}</p>
+                <div className="rephrase-actions">
+                  <button
+                    onClick={() => {
+                      const updatedTask: Task = {
+                        ...task,
+                        // If rephrasing full, split back title + description
+                        ...(rephraseMode === "full" && rephrased.includes(":")
+                          ? {
+                              title: rephrased.split(":")[0].trim(),
+                              description: rephrased
+                                .split(":")
+                                .slice(1)
+                                .join(":")
+                                .trim(),
+                            }
+                          : { title: rephrased }),
+                      };
+                      onEdit(updatedTask);
+                      setRephrased(null);
+                    }}
+                  >
+                    Use Suggestion
+                  </button>
+                  <button onClick={() => setRephrased(null)}>Dismiss</button>
+                </div>
+              </div>
+            )}
+
+            {error && <p className="error-text">{error}</p>}
           </div>
         </>
       )}
