@@ -2,13 +2,47 @@
 
 .app {
   display: flex;
+  flex-direction: row;
   min-height: 100vh;
-  font-family: "Segoe UI", sans-serif;
   background-color: $bg-color;
+  font-family: "Segoe UI", sans-serif;
+  @media screen and (max-width: 768px) {
+    flex-direction: column; // Sidebar on top for mobile
+  }
 }
 
 .main-content {
   flex: 1;
   padding: 2rem;
   background-color: $main-bg;
+}
+
+@media screen and (max-width: 480px) {
+  .app {
+    padding-inline: 3vw;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .app {
+    padding-inline: 6vw;
+  }
+}
+
+@media screen and (max-width: 1050px) {
+  .app {
+    padding-inline: 12vw;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  .app {
+    padding-inline: 14vw;
+  }
+}
+
+@media screen and (min-width: 1281px) {
+  .app {
+    padding-inline: 16vw;
+  }
 }
