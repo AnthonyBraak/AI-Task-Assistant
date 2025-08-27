@@ -38,6 +38,14 @@ function App() {
     );
   };
 
+  const toggleCompleteTask = (id: string) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
   return (
     <div className="app">
       <Sidebar />
@@ -47,6 +55,7 @@ function App() {
           tasks={tasks}
           onDeleteTask={deleteTask}
           onEditTask={editTask}
+          onToggleComplete={toggleCompleteTask}
         />
       </main>
     </div>
