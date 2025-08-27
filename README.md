@@ -13,6 +13,10 @@ Planned upgrades include:
 - Light/dark theme toggle
 - Filter and sort features
 
+## Live Demo
+
+[View it here](https://ai-powered-task-assistant.vercel.app/)
+
 ## Features
 
 - Add, edit, and delete tasks
