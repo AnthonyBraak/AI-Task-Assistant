@@ -1,5 +1,5 @@
 .task-card {
-  background: #f9f9f9;
+  background: $main-bg;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -37,12 +37,16 @@
 }
 
 .task-card button:first-of-type {
-  background-color: #3498db;
+  background-color: $edit;
   color: white;
 }
 
+.task-card button:nth-of-type(2) {
+  background-color: $delete;
+  color: white;
+}
 .task-card button:last-of-type {
-  background-color: #e74c3c;
+  background-color: #28a745;
   color: white;
 }
 
@@ -67,7 +71,7 @@
 .rephrased-text {
   background: #f4f4f4;
   padding: 0.75rem;
-  border-left: 4px solid #007bff;
+  border-left: 4px solid $primary;
   border-radius: 4px;
   margin-top: 0.5rem;
 
@@ -88,12 +92,12 @@
     }
 
     button:first-of-type {
-      background-color: #28a745;
+      background-color: $edit;
       color: white;
     }
 
-    button:last-of-type {
-      background-color: #dc3545;
+    button:nth-of-type(2) {
+      background-color: $delete;
       color: white;
     }
   }
