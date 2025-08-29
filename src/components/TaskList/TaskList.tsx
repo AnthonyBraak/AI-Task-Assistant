@@ -1,10 +1,12 @@
 import "./TaskList.scss";
 import type { Task } from "../../types/task";
-import { useState } from "react";
 import TaskItem from "../TaskItem/TaskItem";
 
 type TaskListProps = {
   tasks: Task[];
+  filter: "all" | "completed" | "incomplete";
+  sortOption: "newest" | "oldest" | "alphabetical";
+  categoryFilter: string;
   onDeleteTask: (id: string) => void;
   onEditTask: (task: Task) => void;
   onToggleComplete: (id: string) => void;
@@ -12,27 +14,22 @@ type TaskListProps = {
 
 export default function TaskList({
   tasks,
+  filter,
+  sortOption,
+  categoryFilter,
   onDeleteTask,
   onEditTask,
   onToggleComplete,
 }: TaskListProps) {
-  const [filter, setFilter] = useState<"all" | "completed" | "incomplete">(
-    "all"
-  );
-  const [sortOption, setSortOption] = useState<
-    "newest" | "oldest" | "alphabetical"
-  >("newest");
-  const [filterCategory, setFilterCategory] = useState<string>("");
+  const filteredByStatus = tasks.filter((task) => {
+    if (filter === "completed") return task.completed;
+    if (filter === "incomplete") return !task.completed;
+    return true;
+  });
 
-  const filteredTasks = tasks
-    .filter((task) => {
-      if (filter === "completed") return task.completed;
-      if (filter === "incomplete") return !task.completed;
-      return true;
-    })
-    .filter((task) => {
-      return filterCategory ? task.category === filterCategory : true;
-    });
+  const filteredTasks = categoryFilter
+    ? filteredByStatus.filter((task) => task.category === categoryFilter)
+    : filteredByStatus;
 
   const sortedTasks = [...filteredTasks].sort((a, b) => {
     if (sortOption === "newest") {
@@ -49,64 +46,21 @@ export default function TaskList({
     return <p className="no-tasks">No tasks yet.</p>;
   }
 
+  if (sortedTasks.length === 0) {
+    return <p className="no-tasks">No tasks match the selected filter.</p>;
+  }
+
   return (
     <div className="task-list">
-      <div className="filter-sort-bar">
-        <div className="filter-buttons">
-          {["all", "completed", "incomplete"].map((type) => (
-            <button
-              key={type}
-              onClick={() =>
-                setFilter(type as "all" | "completed" | "incomplete")
-              }
-              className={filter === type ? "active" : ""}
-            >
-              {type[0].toUpperCase() + type.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        <div className="category-filter">
-          <label htmlFor="category-filter">Category: </label>
-          <select
-            id="category-filter"
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="Work">Work</option>
-            <option value="Personal">Personal</option>
-            <option value="Urgent">Urgent</option>
-          </select>
-        </div>
-
-        <div className="sort-dropdown">
-          <label htmlFor="sort-select">Sort by: </label>
-          <select
-            id="sort-select"
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value as typeof sortOption)}
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="alphabetical">Alphabetical (A–Z)</option>
-          </select>
-        </div>
-      </div>
-
-      {sortedTasks.length === 0 ? (
-        <p className="no-tasks">No tasks match the selected filter.</p>
-      ) : (
-        sortedTasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            onDelete={onDeleteTask}
-            onEdit={onEditTask}
-            onToggleComplete={onToggleComplete}
-          />
-        ))
-      )}
+      {sortedTasks.map((task) => (
+        <TaskItem
+          key={task.id}
+          task={task}
+          onDelete={onDeleteTask}
+          onEdit={onEditTask}
+          onToggleComplete={onToggleComplete}
+        />
+      ))}
     </div>
   );
 }

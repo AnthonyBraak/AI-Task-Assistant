@@ -20,6 +20,14 @@ function App() {
     return [];
   });
 
+  const [filter, setFilter] = useState<"all" | "completed" | "incomplete">(
+    "all"
+  );
+  const [sortOption, setSortOption] = useState<
+    "newest" | "oldest" | "alphabetical"
+  >("newest");
+  const [categoryFilter, setCategoryFilter] = useState<string>("");
+
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
   }, [tasks]);
@@ -48,11 +56,22 @@ function App() {
 
   return (
     <div className="app">
-      <Sidebar />
+      <Sidebar
+        filter={filter}
+        setFilter={setFilter}
+        sortOption={sortOption}
+        setSortOption={setSortOption}
+        categoryFilter={categoryFilter}
+        setCategoryFilter={setCategoryFilter}
+      />
+
       <main className="main-content">
         <TaskForm onAddTask={addTask} />
         <TaskList
           tasks={tasks}
+          filter={filter}
+          sortOption={sortOption}
+          categoryFilter={categoryFilter}
           onDeleteTask={deleteTask}
           onEditTask={editTask}
           onToggleComplete={toggleCompleteTask}
