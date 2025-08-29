@@ -1,5 +1,5 @@
 .task-list {
-  background: white;
+  background: var(--input);
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -13,14 +13,25 @@
   button {
     padding: 0.5rem 1rem;
     border: none;
-    background: #e0e0e0;
+    background: var(--bg-color);
+    color: var(--text-color);
     cursor: pointer;
     border-radius: 4px;
 
     &.active {
-      background: $primary;
+      background: var(--primary);
       color: white;
       font-weight: bold;
     }
   }
+}
+
+.sort-dropdown select {
+  color: var(--text-color);
+  background-color: var(--input);
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
 }

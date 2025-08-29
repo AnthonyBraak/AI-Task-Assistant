@@ -1,5 +1,5 @@
 .task-card {
-  background: $main-bg;
+  background: var(--main-bg);
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -21,12 +21,16 @@
   border-radius: 4px;
   font-size: 1rem;
   box-sizing: border-box;
+  color: var(--text-color);
+  background-color: var(--input);
 }
 
 .task-card .actions {
   margin-top: 0.5rem;
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
 }
 
 .task-card button {
@@ -37,15 +41,15 @@
 }
 
 .task-card button:first-of-type {
-  background-color: $edit;
+  background-color: var(--edit);
   color: white;
 }
 
 .task-card button:nth-of-type(2) {
-  background-color: $delete;
+  background-color: var(--delete);
   color: white;
 }
-.task-card button:last-of-type {
+.task-card button:nth-of-type(3) {
   background-color: #28a745;
   color: white;
 }
@@ -68,10 +72,21 @@
   opacity: 0.6;
 }
 
+.actions select {
+  color: var(--text-color);
+  background-color: var(--input);
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
 .rephrased-text {
-  background: #f4f4f4;
+  background: var(--main-bg);
+  box-shadow: 2px 2px 5px gray;
   padding: 0.75rem;
-  border-left: 4px solid $primary;
+  border-left: 4px solid var(--primary);
   border-radius: 4px;
   margin-top: 0.5rem;
 
@@ -92,12 +107,12 @@
     }
 
     button:first-of-type {
-      background-color: $edit;
+      background-color: var(--edit);
       color: white;
     }
 
     button:nth-of-type(2) {
-      background-color: $delete;
+      background-color: var(--delete);
       color: white;
     }
   }

@@ -20,7 +20,7 @@
       cursor: pointer;
 
       &:hover {
-        color: $primary;
+        color: var(--primary);
       }
     }
   }

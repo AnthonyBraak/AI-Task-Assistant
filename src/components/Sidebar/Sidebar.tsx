@@ -1,3 +1,5 @@
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
+
 export default function Sidebar() {
-  return <div></div>;
+  return <ThemeToggle />;
 }

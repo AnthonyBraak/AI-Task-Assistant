@@ -1,6 +1,19 @@
-$bg-color: #f0f0f0;
-$main-bg: #f9f9f9;
-$primary: #5c6bc0;
-$text-color: #333;
-$edit: #3498db;
-$delete: #e74c3c;
+:root {
+  --bg-color: #e0e0e0;
+  --main-bg: #f9f9f9;
+  --input: #ffffff;
+  --primary: #5c6bc0;
+  --text-color: #333;
+  --edit: #3498db;
+  --delete: #e74c3c;
+}
+
+body[data-theme="dark"] {
+  --bg-color: #1e1e1e;
+  --main-bg: #2c2c2c;
+  --input: #111111;
+  --primary: #8e99f3;
+  --text-color: #eee;
+  --edit: #64b5f6;
+  --delete: #f44336;
+}

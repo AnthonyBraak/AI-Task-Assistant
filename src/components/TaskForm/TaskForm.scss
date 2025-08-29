@@ -10,10 +10,12 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
+    color: var(--text-color);
+    background-color: var(--input);
   }
 
   button {
-    background-color: $primary;
+    background-color: var(--primary);
     color: white;
     padding: 0.8rem;
     border: none;
