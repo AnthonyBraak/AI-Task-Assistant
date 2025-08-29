@@ -22,12 +22,17 @@ export default function TaskList({
   const [sortOption, setSortOption] = useState<
     "newest" | "oldest" | "alphabetical"
   >("newest");
+  const [filterCategory, setFilterCategory] = useState<string>("");
 
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === "completed") return task.completed;
-    if (filter === "incomplete") return !task.completed;
-    return true; // "all"
-  });
+  const filteredTasks = tasks
+    .filter((task) => {
+      if (filter === "completed") return task.completed;
+      if (filter === "incomplete") return !task.completed;
+      return true;
+    })
+    .filter((task) => {
+      return filterCategory ? task.category === filterCategory : true;
+    });
 
   const sortedTasks = [...filteredTasks].sort((a, b) => {
     if (sortOption === "newest") {
@@ -59,6 +64,20 @@ export default function TaskList({
               {type[0].toUpperCase() + type.slice(1)}
             </button>
           ))}
+        </div>
+
+        <div className="category-filter">
+          <label htmlFor="category-filter">Category: </label>
+          <select
+            id="category-filter"
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+          >
+            <option value="">All</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Urgent">Urgent</option>
+          </select>
         </div>
 
         <div className="sort-dropdown">

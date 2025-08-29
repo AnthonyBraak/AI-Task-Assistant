@@ -35,3 +35,27 @@
   border-radius: 4px;
   font-size: 0.9rem;
 }
+
+.filter-sort-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .filter-buttons button,
+  .category-filter select,
+  .sort-dropdown select {
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    background-color: var(--input);
+    color: var(--text-color);
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+  }
+
+  .filter-buttons .active {
+    background-color: var(--primary);
+    color: white;
+  }
+}

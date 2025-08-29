@@ -19,6 +19,7 @@ export default function TaskItem({
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(task.title);
   const [editedDesc, setEditedDesc] = useState(task.description || "");
+  const [editedCategory, setEditedCategory] = useState(task.category || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rephrased, setRephrased] = useState<string | null>(null);
@@ -29,6 +30,7 @@ export default function TaskItem({
       ...task,
       title: editedTitle.trim(),
       description: editedDesc.trim(),
+      category: editedCategory || undefined,
     };
     onEdit(updatedTask);
     setIsEditing(false);
@@ -77,11 +79,28 @@ export default function TaskItem({
             value={editedDesc}
             onChange={(e) => setEditedDesc(e.target.value)}
           />
+          <select
+            className="select-dropdown"
+            value={editedCategory}
+            onChange={(e) => setEditedCategory(e.target.value)}
+          >
+            <option value="">Select category</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Urgent">Urgent</option>
+          </select>
           <button onClick={handleSave}>Save</button>
           <button onClick={handleCancel}>Cancel</button>
         </div>
       ) : (
         <>
+          {task.category && (
+            <div
+              className={`task-category-badge ${task.category.toLowerCase()}`}
+            >
+              {task.category}
+            </div>
+          )}
           <label className="task-complete">
             <input
               type="checkbox"
@@ -130,7 +149,6 @@ export default function TaskItem({
                     onClick={() => {
                       const updatedTask: Task = {
                         ...task,
-                        // If rephrasing full, split back title + description
                         ...(rephraseMode === "full" && rephrased.includes(":")
                           ? {
                               title: rephrased.split(":")[0].trim(),
