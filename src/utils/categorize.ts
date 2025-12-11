@@ -1,4 +1,4 @@
-export async function rephraseTaskGroq(task: string): Promise<string> {
+export async function categorizeTaskGroq(task: string): Promise<string> {
   const apiKey = import.meta.env.VITE_GROQ_API_KEY;
   if (!apiKey) {
     throw new Error("Missing GROQ API key");
@@ -17,12 +17,20 @@ export async function rephraseTaskGroq(task: string): Promise<string> {
         messages: [
           {
             role: "system",
-            content:
-              "You are a helpful assistant that rewrites tasks to be clear and concise.",
+            content: `You categorize tasks into one of the following categories:
+               - Work
+               - Personal
+               - Study
+               - Home
+               - Health
+               - Errands
+               - Other
+
+               Return only the category name.`,
           },
           {
             role: "user",
-            content: `Rephrase the following task concisely and return only the rephrased task text without any extra commentary. Don't put the text in quotations: "${task}"`,
+            content: `Categorize this task: "${task}"`,
           },
         ],
       }),

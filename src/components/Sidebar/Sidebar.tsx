@@ -21,6 +21,16 @@ export default function Sidebar({
 }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
 
+  const categories = [
+    "Work",
+    "Personal",
+    "Study",
+    "Home",
+    "Health",
+    "Errands",
+    "Other",
+  ];
+
   return (
     <aside className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
       <button
@@ -69,9 +79,11 @@ export default function Sidebar({
               onChange={(e) => setCategoryFilter(e.target.value)}
             >
               <option value="">All</option>
-              <option value="Work">Work</option>
-              <option value="Personal">Personal</option>
-              <option value="Urgent">Urgent</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
             </select>
           </div>
         </div>

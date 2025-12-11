@@ -70,13 +70,32 @@
 }
 
 .task-category-badge.work {
-  background-color: #007bff;
+  background-color: #007bff; /* Blue */
 }
+
 .task-category-badge.personal {
-  background-color: #28a745;
+  background-color: #28a745; /* Green */
 }
-.task-category-badge.urgent {
-  background-color: #dc3545;
+
+.task-category-badge.home {
+  background-color: #17a2b8; /* Teal */
+}
+
+.task-category-badge.health {
+  background-color: #ffc107; /* Yellow */
+  color: #212529; /* Dark text for contrast */
+}
+
+.task-category-badge.errands {
+  background-color: #fd7e14; /* Orange */
+}
+
+.task-category-badge.study {
+  background-color: #6610f2; /* Purple */
+}
+
+.task-category-badge.other {
+  background-color: #6c757d; /* Gray */
 }
 
 .task-complete {

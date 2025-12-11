@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Task } from "../../types/task";
 import "./TaskItem.scss";
 import { rephraseTaskGroq } from "../../utils/openai";
+import { categorizeTaskGroq } from "../../utils/categorize";
 
 type TaskItemProps = {
   task: Task;
@@ -9,6 +10,16 @@ type TaskItemProps = {
   onEdit: (task: Task) => void;
   onToggleComplete: (id: string) => void;
 };
+
+const CATEGORIES = [
+  "Work",
+  "Personal",
+  "Home",
+  "Health",
+  "Errands",
+  "Study",
+  "Other",
+];
 
 export default function TaskItem({
   task,
@@ -21,9 +32,12 @@ export default function TaskItem({
   const [editedDesc, setEditedDesc] = useState(task.description || "");
   const [editedCategory, setEditedCategory] = useState(task.category || "");
   const [loading, setLoading] = useState(false);
+  const [categorizeLoading, setCategorizeLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [rephrased, setRephrased] = useState<string | null>(null);
   const [rephraseMode, setRephraseMode] = useState<"title" | "full">("title");
+
+  const categoryClass = (cat: string) => cat.toLowerCase().replace(/\s+/g, "-");
 
   const handleSave = () => {
     const updatedTask: Task = {
@@ -40,6 +54,7 @@ export default function TaskItem({
     setIsEditing(false);
     setEditedTitle(task.title);
     setEditedDesc(task.description || "");
+    setEditedCategory(task.category || "");
   };
 
   const handleRephrase = async () => {
@@ -53,16 +68,38 @@ export default function TaskItem({
 
       const result = await rephraseTaskGroq(textToRephrase);
       setRephrased(result);
-    } catch (error: unknown) {
-      console.error("Error during rephrasing:", error);
-
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError("Failed to rephrase task.");
-      }
+    } catch (err: unknown) {
+      console.error("Error during rephrasing:", err);
+      if (err instanceof Error) setError(err.message);
+      else setError("Failed to rephrase task.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCategorize = async () => {
+    if (!task.title && !task.description) return;
+
+    setCategorizeLoading(true);
+    setError(null);
+
+    try {
+      const category = await categorizeTaskGroq(
+        `${task.title}${task.description ? `: ${task.description}` : ""}`
+      );
+
+      const updatedTask: Task = {
+        ...task,
+        category,
+      };
+      onEdit(updatedTask);
+      setEditedCategory(category);
+    } catch (err: unknown) {
+      console.error("Error during categorization:", err);
+      if (err instanceof Error) setError(err.message);
+      else setError("Failed to categorize task.");
+    } finally {
+      setCategorizeLoading(false);
     }
   };
 
@@ -84,10 +121,11 @@ export default function TaskItem({
             value={editedCategory}
             onChange={(e) => setEditedCategory(e.target.value)}
           >
-            <option value="">Select category</option>
-            <option value="Work">Work</option>
-            <option value="Personal">Personal</option>
-            <option value="Urgent">Urgent</option>
+            {CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
           </select>
           <button onClick={handleSave}>Save</button>
           <button onClick={handleCancel}>Cancel</button>
@@ -96,11 +134,12 @@ export default function TaskItem({
         <>
           {task.category && (
             <div
-              className={`task-category-badge ${task.category.toLowerCase()}`}
+              className={`task-category-badge ${categoryClass(task.category)}`}
             >
               {task.category}
             </div>
           )}
+
           <label className="task-complete">
             <input
               type="checkbox"
@@ -125,19 +164,28 @@ export default function TaskItem({
             <button onClick={() => setIsEditing(true)}>Edit</button>
             <button onClick={() => onDelete(task.id)}>Delete</button>
 
-            <select
-              value={rephraseMode}
-              onChange={(e) =>
-                setRephraseMode(e.target.value as "title" | "full")
-              }
-              disabled={loading}
-            >
-              <option value="title">Rephrase Title Only</option>
-              <option value="full">Rephrase Title & Description</option>
-            </select>
+            <div className="rephrase-section">
+              <select
+                value={rephraseMode}
+                onChange={(e) =>
+                  setRephraseMode(e.target.value as "title" | "full")
+                }
+                disabled={loading}
+              >
+                <option value="title">Rephrase Title Only</option>
+                <option value="full">Rephrase Title & Description</option>
+              </select>
+              <button onClick={handleRephrase} disabled={loading}>
+                {loading ? "Rephrasing..." : "Rephrase"}
+              </button>
+            </div>
 
-            <button onClick={handleRephrase} disabled={loading}>
-              {loading ? "Rephrasing..." : "Rephrase"}
+            <button
+              onClick={handleCategorize}
+              disabled={categorizeLoading}
+              className="categorize-button"
+            >
+              {categorizeLoading ? "Categorizing..." : "Categorize"}
             </button>
 
             {rephrased && (
