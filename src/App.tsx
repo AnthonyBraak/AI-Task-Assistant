@@ -4,10 +4,12 @@ import TaskForm from "./components/TaskForm/TaskForm";
 import TaskList from "./components/TaskList/TaskList";
 import type { Task } from "./types/task";
 import { useEffect, useState } from "react";
+import Modal from "./components/Modular/Modal";
 
 const LOCAL_STORAGE_KEY = "ai-task-assistant.tasks";
 
 function App() {
+  const [isOpen, setIsOpen] = useState(false);
   const [tasks, setTasks] = useState<Task[]>(() => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
@@ -77,6 +79,22 @@ function App() {
           onToggleComplete={toggleCompleteTask}
         />
       </main>
+      <div>
+        <button className="info-button" onClick={() => setIsOpen(true)}>
+          Info
+        </button>
+
+        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <h2>Info</h2>
+          <p>
+            For security Reasons, the AI Key has not been included in this demo.
+          </p>
+          <p>
+            If you would like to view the full, working version, feel free to
+            add your own key or get in touch with me.
+          </p>
+        </Modal>
+      </div>
     </div>
   );
 }
