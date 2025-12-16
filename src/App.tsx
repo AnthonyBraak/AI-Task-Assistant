@@ -5,11 +5,12 @@ import TaskList from "./components/TaskList/TaskList";
 import type { Task } from "./types/task";
 import { useEffect, useState } from "react";
 import Modal from "./components/Modular/Modal";
+import { useModal } from "./utils/useModal";
 
 const LOCAL_STORAGE_KEY = "ai-task-assistant.tasks";
 
 function App() {
-  const [isOpen, setIsOpen] = useState(false);
+  const infoModal = useModal();
   const [tasks, setTasks] = useState<Task[]>(() => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
@@ -80,11 +81,11 @@ function App() {
         />
       </main>
       <div>
-        <button className="info-button" onClick={() => setIsOpen(true)}>
+        <button className="info-button" onClick={infoModal.open}>
           Info
         </button>
 
-        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <Modal isOpen={infoModal.isOpen} onClose={infoModal.close}>
           <h2>Info</h2>
           <p>
             For security Reasons, the AI Key has not been included in this demo.
