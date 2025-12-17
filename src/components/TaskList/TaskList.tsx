@@ -1,6 +1,7 @@
 import "./TaskList.scss";
 import type { Task } from "../../types/task";
-import TaskItem from "../TaskItem/TaskItem";
+import { lazy, Suspense } from "react";
+const TaskItem = lazy(() => import("../TaskItem/TaskItem"));
 
 type TaskListProps = {
   tasks: Task[];
@@ -52,15 +53,17 @@ export default function TaskList({
 
   return (
     <div className="task-list">
-      {sortedTasks.map((task) => (
-        <TaskItem
-          key={task.id}
-          task={task}
-          onDelete={onDeleteTask}
-          onEdit={onEditTask}
-          onToggleComplete={onToggleComplete}
-        />
-      ))}
+      <Suspense fallback={<div>Loading...</div>}>
+        {sortedTasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            onDelete={onDeleteTask}
+            onEdit={onEditTask}
+            onToggleComplete={onToggleComplete}
+          />
+        ))}
+      </Suspense>
     </div>
   );
 }

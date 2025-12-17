@@ -1,10 +1,10 @@
 import "./styles/main.scss";
-import Sidebar from "./components/Sidebar/Sidebar";
-import TaskForm from "./components/TaskForm/TaskForm";
-import TaskList from "./components/TaskList/TaskList";
 import type { Task } from "./types/task";
-import { useEffect, useState } from "react";
-import Modal from "./components/Modular/Modal";
+import { lazy, Suspense, useEffect, useState } from "react";
+const Sidebar = lazy(() => import("./components/Sidebar/Sidebar"));
+const TaskForm = lazy(() => import("./components/TaskForm/TaskForm"));
+const TaskList = lazy(() => import("./components/TaskList/TaskList"));
+const Modal = lazy(() => import("./components/Modular/Modal"));
 import { useModal } from "./utils/useModal";
 
 const LOCAL_STORAGE_KEY = "ai-task-assistant.tasks";
@@ -58,45 +58,49 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <Sidebar
-        filter={filter}
-        setFilter={setFilter}
-        sortOption={sortOption}
-        setSortOption={setSortOption}
-        categoryFilter={categoryFilter}
-        setCategoryFilter={setCategoryFilter}
-      />
-
-      <main className="main-content">
-        <TaskForm onAddTask={addTask} />
-        <TaskList
-          tasks={tasks}
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="app">
+        <Sidebar
           filter={filter}
+          setFilter={setFilter}
           sortOption={sortOption}
+          setSortOption={setSortOption}
           categoryFilter={categoryFilter}
-          onDeleteTask={deleteTask}
-          onEditTask={editTask}
-          onToggleComplete={toggleCompleteTask}
+          setCategoryFilter={setCategoryFilter}
         />
-      </main>
-      <div>
-        <button className="info-button" onClick={infoModal.open}>
-          Info
-        </button>
 
-        <Modal isOpen={infoModal.isOpen} onClose={infoModal.close}>
-          <h2>Info</h2>
-          <p>
-            For security Reasons, the AI Key has not been included in this demo.
-          </p>
-          <p>
-            If you would like to view the full, working version, feel free to
-            add your own key or get in touch with me.
-          </p>
-        </Modal>
+        <main className="main-content">
+          <TaskForm onAddTask={addTask} />
+
+          <TaskList
+            tasks={tasks}
+            filter={filter}
+            sortOption={sortOption}
+            categoryFilter={categoryFilter}
+            onDeleteTask={deleteTask}
+            onEditTask={editTask}
+            onToggleComplete={toggleCompleteTask}
+          />
+        </main>
+        <div>
+          <button className="info-button" onClick={infoModal.open}>
+            Info
+          </button>
+
+          <Modal isOpen={infoModal.isOpen} onClose={infoModal.close}>
+            <h2>Info</h2>
+            <p>
+              For security Reasons, the AI Key has not been included in this
+              demo.
+            </p>
+            <p>
+              If you would like to view the full, working version, feel free to
+              add your own key or get in touch with me.
+            </p>
+          </Modal>
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 }
 
